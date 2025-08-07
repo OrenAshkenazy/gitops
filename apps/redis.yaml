@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/OrenAshkenazy/gitops
     targetRevision: HEAD
-    path: redis
+    path: charts/redis
     helm:
       values: |
         architecture: replication

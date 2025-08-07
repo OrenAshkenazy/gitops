@@ -10,7 +10,7 @@ spec:
     repoURL: https://github.com/OrenAshkenazy/gitops
     targetRevision: HEAD
     path: apps
-    direcory:
+    directory:
       recurse: true
   destination:
     server: https://kubernetes.default.svc
