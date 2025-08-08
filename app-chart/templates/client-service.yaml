@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "internal-assistance.fullname" . }}-client
+  annotations: {{ toYaml .Values.client.service.annotations | nindent 4 }}
+spec:
+  selector:
+    app: client
+  ports:
+    - port: {{ .Values.client.service.port }}
+      targetPort: {{ .Values.client.service.port }}
+  type: {{ .Values.client.service.type | default "ClusterIP" }}

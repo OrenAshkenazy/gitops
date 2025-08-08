@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: internal-services
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/OrenAshkenazy/gitops
+        revision: HEAD
+        directories:
+          - path: services/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/OrenAshkenazy/gitops
+        targetRevision: HEAD
+        path: app-chart
+        helm:
+          valueFiles:
+            - services/{{path.basename}}/values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

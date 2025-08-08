@@ -1,17 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: apps-root
+  name: localstack
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/OrenAshkenazy/gitops
-    targetRevision: HEAD
-    path: apps
+    chart: localstack
+    repoURL: https://helm.localstack.cloud
+    targetRevision: 0.4.1
+    helm:
+      valueFiles:
+        - apps/localstack/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: infra
   syncPolicy:
     automated:
       prune: true

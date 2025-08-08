@@ -1,0 +1,75 @@
+backend:
+  replicaCount: 1
+  image:
+    repository: localhost:5001/internal-assistant-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 9010
+  env:
+    APP_ENV: development
+    DEBUG: 'true'
+    DATABASE_URL: postgresql://postgres:postgres@pgvector-postgresql:5432/internal_assistant
+    POSTGRES_USER: postgres
+    POSTGRES_DB: internal_assistant
+    POSTGRES_HOST: pgvector-postgresql
+    POSTGRES_PORT: '5432'
+    HOST: 0.0.0.0
+    PORT: '9010'
+    CORS_ORIGINS: http://internal-assistance-client:5178,http://internal-assistance-client:5179,http://internal-assistance-client:5179
+    AWS_ACCESS_KEY_ID: test
+    AWS_SECRET_ACCESS_KEY: test
+    AWS_DEFAULT_REGION: us-east-1
+    AWS_BEDROCK_REGION: us-east-1
+    AWS_BEDROCK_MODEL_ID: anthropic.claude-3-sonnet-20240229-v1:0
+    AWS_BEDROCK_MODEL_FAMILY: claude
+    AWS_ENDPOINT_URL: http://localstack:4566
+    SQS_QUEUE_URL: http://localstack:4566/000000000000/slack-events
+    SQS_ENDPOINT_URL: http://localstack:4566
+    LOCALSTACK_ENDPOINT: http://localstack:4566
+    LOCALSTACK_ENDPOINT_URL: http://localstack:4566
+    SLACK_SQS_QUEUE_URL: http://localstack:4566/000000000000/slack-events
+    SLACK_SQS_ENDPOINT_URL: http://localstack:4566
+    SLACK_RESPONSE_TIMEOUT: '30'
+    SLACK_MAX_MESSAGE_LENGTH: '3000'
+    SLACK_DEBUG_MODE: 'false'
+    GITHUB_WEBHOOK_SECRET: ''
+    JIRA_SERVER_URL: ''
+    JIRA_API_TOKEN: ''
+    JIRA_USERNAME: ''
+    EMAIL_SMTP_SERVER: ''
+    EMAIL_SMTP_PORT: '587'
+    EMAIL_USERNAME: ''
+    EMAIL_PASSWORD: ''
+    EMAIL_USE_TLS: 'true'
+    COGNITO_USER_POOL_ID: ''
+    COGNITO_CLIENT_ID: ''
+    COGNITO_REGION: us-east-1
+    USE_MOCK_COGNITO: 'true'
+    OTEL_ENABLED: false
+    OTEL_RESOURCE_ATTRIBUTES: "service.name=internal-assistant-backend,service.namespace=default,deployment.environment=development"
+    OTEL_EXPORTER_OTLP_ENDPOINT: "https://otlp-gateway-prod-me-central-1.grafana.net/otlp"
+    OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+
+client:
+  replicaCount: 1
+  image:
+    repository: localhost:5001/internal-assistant-client
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 5178
+  env:
+    VITE_OTEL_ENABLED: false
+    VITE_API_URL: http://localhost:9010
+    VITE_OTEL_EXPORTER_OTLP_ENDPOINT: "https://otlp-gateway-prod-me-central-1.grafana.net/otlp"
+    VITE_OTEL_SERVICE_NAME: "internal-assistant-client"
+    VITE_OTEL_RESOURCE_ATTRIBUTES: "service.name=internal-assistant-client,service.namespace=default,deployment.environment=development"
+
+# Secrets section for sensitive data
+secrets:
+  otelHeaders: "Authorization=Basic%20MTMxMDg3MzpnbGNfZXlKdklqb2lNVFEzTnprNU15SXNJbTRpT2lKcGJuUmxjbUZ1YkMxaGMzTnBjM1JoYm1ObExXSmhZMnRsYm1RaUxDSnJJam9pYmpOUE5Ha3lOV3RhVkhJM05USXlOVGhUVTFSUlpHaHVJaXdpYlNJNmV5SnlJam9pY0hKdlpDMXRaUzFqWlc1MGNtRnNMVEVpZlgwPQ=="
+  postgresPassword: "postgres"
+  slackBotToken: ""
+  slackSigningSecret: ""
+  githubApiToken: ""

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "internal-assistance.fullname" . }}-client
+  labels:
+    app: client
+spec:
+  replicas: {{ .Values.client.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+      - name: client
+        image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
+        imagePullPolicy: {{ .Values.client.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.client.service.port }}
+        env:
+{{- range $key, $value := .Values.client.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+{{- end }}
+        # Secret references for sensitive data
+        - name: VITE_OTEL_EXPORTER_OTLP_HEADERS
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "internal-assistance.fullname" . }}-secrets
+              key: otel-headers

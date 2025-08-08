@@ -1,0 +1,16 @@
+auth:
+  username: postgres
+  password: postgres
+  database: internal_assistant
+primary:
+  initdb:
+    scripts:
+      init-pgvector.sql: |
+        CREATE EXTENSION IF NOT EXISTS vector;
+persistence:
+  size: 1Gi
+# storageClass: standard
+# resources:
+#   requests:
+#     memory: 256Mi
+#     cpu: 250m

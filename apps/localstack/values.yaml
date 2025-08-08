@@ -1,0 +1,28 @@
+startServices: "sqs,s3,secretsmanager,iam"
+persistence: 
+  enabled: true
+extraEnv:
+  - name: SERVICES
+    value: sqs,s3,secretsmanager,iam
+  - name: DEBUG
+    value: "1"
+  - name: DATA_DIR
+    value: /tmp/localstack/data
+  - name: PERSISTENCE
+    value: "1"
+  - name: AWS_DEFAULT_REGION
+    value: us-east-1
+  - name: AWS_ACCESS_KEY_ID
+    value: test
+  - name: AWS_SECRET_ACCESS_KEY
+    value: test
+service:
+  ports:
+    - name: main
+      port: 4566
+    - name: ext-ports-4510
+      port: 4510
+    - name: ext-ports-4511
+      port: 4511
+    - name: ext-ports-4559
+      port: 4559

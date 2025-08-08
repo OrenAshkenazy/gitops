@@ -1,0 +1,53 @@
+backend:
+  replicaCount: 1
+  image:
+    repository: localhost:5001/internal-assistant-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  env:
+    - name: DATABASE_URL
+      value: postgresql://user:password@postgresql:5432/db
+    - name: AWS_ENDPOINT_URL
+      value: http://localstack:4566
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+client:
+  replicaCount: 1
+  image:
+    repository: localhost:5001/internal-assistant-client
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  env:
+    - name: NEXT_PUBLIC_API_URL
+      value: http://backend:8080
+  resources:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+postgresql:
+  enabled: false  # Controlled by values-pg.yaml
+
+localstack:
+  enabled: false  # Controlled by values-localstack.yaml
+
+secrets:
+  NEXT_PUBLIC_AUTH_ENABLED: "false"
+  NEXTAUTH_SECRET: "supersecret"
+  DATABASE_URL: "postgresql://user:password@postgresql:5432/db"
+  NEXTAUTH_URL: "http://client:3000"
