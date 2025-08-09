@@ -3,15 +3,20 @@ kind: Application
 metadata:
   name: localstack
   namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.slack: dev-events
 spec:
   project: default
-  source:
-    chart: localstack
+  sources:
+  - chart: localstack
     repoURL: https://helm.localstack.cloud
     targetRevision: 0.4.1
     helm:
       valueFiles:
-        - $values/apps/localstack/values.yaml
+      - $values/apps/localstack/values.yaml
+  - repoURL: https://github.com/OrenAshkenazy/gitops
+    targetRevision: appset
+    ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: infra
@@ -19,5 +24,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  syncOptions:
+    syncOptions:
     - CreateNamespace=true
