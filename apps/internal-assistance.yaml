@@ -11,7 +11,7 @@ spec:
     path: charts/app-chart
     helm:
       valueFiles:
-        - apps/internal-assistance/values.yaml
+        - $values/apps/internal-assistance/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: internal-assistance
