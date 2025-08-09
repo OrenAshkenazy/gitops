@@ -3,15 +3,20 @@ kind: Application
 metadata:
   name: internal-assistance
   namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.slack: dev-events
 spec:
   project: default
-  source:
-    repoURL: https://github.com/OrenAshkenazy/gitops
+  sources:
+  - repoURL: https://github.com/OrenAshkenazy/gitops
     targetRevision: appset
     path: charts/app-chart
     helm:
       valueFiles:
-        - $values/apps/internal-assistance/values.yaml
+      - $values/apps/internal-assistance/values.yaml
+  - repoURL: https://github.com/OrenAshkenazy/gitops
+    targetRevision: appset
+    ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: internal-assistance
@@ -19,5 +24,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  syncOptions:
+    syncOptions:
     - CreateNamespace=true
+    - ServerSideApply=true

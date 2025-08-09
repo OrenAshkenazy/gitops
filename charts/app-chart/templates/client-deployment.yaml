@@ -1,18 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "internal-assistance.fullname" . }}-client
+  name: {{ include "app-chart.fullname" . }}-client
   labels:
-    app: client
+    {{- include "app-chart.labels" . | nindent 4 }}
+    app.kubernetes.io/component: client
 spec:
   replicas: {{ .Values.client.replicaCount | default 1 }}
   selector:
     matchLabels:
-      app: client
+      {{- include "app-chart.client.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: client
+        {{- include "app-chart.client.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: client
@@ -29,5 +30,5 @@ spec:
         - name: VITE_OTEL_EXPORTER_OTLP_HEADERS
           valueFrom:
             secretKeyRef:
-              name: {{ include "internal-assistance.fullname" . }}-secrets
+              name: {{ include "app-chart.fullname" . }}-secrets
               key: otel-headers

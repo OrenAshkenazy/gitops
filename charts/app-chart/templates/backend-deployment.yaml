@@ -1,18 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "internal-assistance.fullname" . }}-backend
+  name: {{ include "app-chart.fullname" . }}-backend
   labels:
-    app: backend
+    {{- include "app-chart.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
 spec:
   replicas: {{ .Values.backend.replicaCount | default 1 }}
   selector:
     matchLabels:
-      app: backend
+      {{- include "app-chart.backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: backend
+        {{- include "app-chart.backend.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: backend
@@ -29,25 +30,25 @@ spec:
         - name: OTEL_EXPORTER_OTLP_HEADERS
           valueFrom:
             secretKeyRef:
-              name: {{ include "internal-assistance.fullname" . }}-secrets
+              name: {{ include "app-chart.fullname" . }}-secrets
               key: otel-headers
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ include "internal-assistance.fullname" . }}-secrets
+              name: {{ include "app-chart.fullname" . }}-secrets
               key: postgres-password
         - name: SLACK_BOT_TOKEN
           valueFrom:
             secretKeyRef:
-              name: {{ include "internal-assistance.fullname" . }}-secrets
+              name: {{ include "app-chart.fullname" . }}-secrets
               key: slack-bot-token
         - name: SLACK_SIGNING_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ include "internal-assistance.fullname" . }}-secrets
+              name: {{ include "app-chart.fullname" . }}-secrets
               key: slack-signing-secret
         - name: GITHUB_API_TOKEN
           valueFrom:
             secretKeyRef:
-              name: {{ include "internal-assistance.fullname" . }}-secrets
+              name: {{ include "app-chart.fullname" . }}-secrets
               key: github-api-token

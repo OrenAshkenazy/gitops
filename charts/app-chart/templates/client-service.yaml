@@ -1,11 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "internal-assistance.fullname" . }}-client
-  annotations: {{ toYaml .Values.client.service.annotations | nindent 4 }}
+  name: {{ include "app-chart.fullname" . }}-client
+  labels:
+    {{- include "app-chart.labels" . | nindent 4 }}
+    app.kubernetes.io/component: client
+  {{- with .Values.client.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   selector:
-    app: client
+    {{- include "app-chart.client.selectorLabels" . | nindent 4 }}
   ports:
     - port: {{ .Values.client.service.port }}
       targetPort: {{ .Values.client.service.port }}
